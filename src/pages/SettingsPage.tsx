@@ -1,22 +1,27 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
-import "../index.css";
-import "../style/settingspage.css";
 import supabase from "../supabase";
 import { useToast } from "../components/toast";
+import { userNotFoundMessage } from "../utils/utils";
+import "../index.css";
+import "../style/settingspage.css";
 
 const SettingsPage = () => {
-  const { isAuthenticated, userName, userId, logout } = useAuth();
-  const showToast = useToast();
+  const [isSaving, setIsSaving] = useState(false);
   const [newName, setNewName] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const { isAuthenticated, userName, userId, logout } = useAuth();
+  const showToast = useToast();
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || userName == userNotFoundMessage) {
+    sessionStorage.setItem("userId", "");
     location.href = "/"; // Redireciona para a página de login se o usuário não estiver logado
     return null; // Evita renderizar o componente se não houver usuário
   }
 
   const handleSave = async () => {
+    setIsSaving(true);
+
     const { error } = await supabase
       .from("usuarios")
       .update({ nome: newName })
@@ -36,11 +41,16 @@ const SettingsPage = () => {
           "success"
         );
 
+      setNewName("");
+      setIsSaving(false);
       return;
     }
 
     if (error) showToast("Erro ao salvar", error.message, "error");
     else showToast("Sucesso", "Nome atualizado com sucesso!", "success");
+
+    setNewName("");
+    setIsSaving(false);
   };
 
   const resetFields = () => {
@@ -48,7 +58,7 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className="flex-col gap-10 flex-center">
+    <div className="flex-col gap-10 flex-center desktop-fit">
       <h2>Configurações</h2>
 
       <div className="flex-row gap-10 w-90p">
@@ -101,8 +111,16 @@ const SettingsPage = () => {
           </div>
 
           <div className="h-box">
-            <button className="button w-100p" onClick={handleSave}>
-              Salvar
+            <button
+              className={
+                isSaving || newName == userName || !newName
+                  ? "button-disabled w-100p"
+                  : "button w-100p"
+              }
+              disabled={isSaving || newName == userName || !newName}
+              onClick={handleSave}
+            >
+              {isSaving ? "Salvando..." : "Salvar"}
             </button>
             <button className="button-gray w-100p" onClick={resetFields}>
               Resetar

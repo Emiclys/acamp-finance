@@ -7,11 +7,20 @@ import "../style/authpage.css";
 
 const LoginForm = () => {
   const { login } = useAuth();
+  const [signingIn, setSigningIn] = useState(false);
   const [password, setPassword] = useState("");
   const [id, setId] = useState("");
   const showToast = useToast();
 
   const handleSubmit = async () => {
+    setSigningIn(true);
+
+    if (!id || !password) {
+      showToast("Erro", "Preencha todos os campos", "info");
+      setSigningIn(false);
+      return;
+    }
+
     const { data } = await supabase
       .from("usuarios")
       .select()
@@ -21,8 +30,12 @@ const LoginForm = () => {
 
     if (data) {
       login(id);
+      setSigningIn(false);
       location.href = "/dashboard"; // Redireciona para o dashboard se o login for bem-sucedido
-    } else showToast("Erro no login", "ID ou senha incorretos.", "error");
+    } else {
+      showToast("Erro no login", "ID ou senha incorretos.", "error");
+      setSigningIn(false);
+    }
   };
 
   return (
@@ -50,8 +63,12 @@ const LoginForm = () => {
         </div>
 
         <div className="flex-row gap-10">
-          <button className="button w-100p" onClick={handleSubmit}>
-            Entrar
+          <button
+            className={signingIn ? "button-disabled w-100p" : "button w-100p"}
+            disabled={signingIn}
+            onClick={handleSubmit}
+          >
+            {signingIn ? "Entrando..." : "Entrar"}
           </button>
         </div>
       </div>

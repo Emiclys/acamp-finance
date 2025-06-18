@@ -1,5 +1,7 @@
 import supabase from "../supabase";
 
+export const userNotFoundMessage = "[usuário não encontrado]";
+
 export function GenerateRandom(length: number): string {
   const characters = "1234567890";
   let userID = "";
@@ -32,8 +34,8 @@ export async function getUserNameById(id: string): Promise<string> {
 
   if (error) {
     console.error("Erro ao buscar nome do usuário:", error);
-    return "[Usuário não encontrado]";
+    return userNotFoundMessage;
   }
 
-  return data?.nome || "[Usuário não encontrado]";
+  return data?.nome || userNotFoundMessage;
 }

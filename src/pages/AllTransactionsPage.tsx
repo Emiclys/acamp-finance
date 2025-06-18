@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { formatCurrency } from "../utils/utils";
 import supabase from "../supabase";
+import { useAuth } from "../hooks/useAuth";
 import "../index.css";
 import "../style/dashboard.css";
 
@@ -13,16 +14,11 @@ interface Transaction {
   tipo: string;
 }
 
-const PAGE_SIZE = 20;
-
-const getInitialUserId = () => {
-  const storedUserId = sessionStorage.getItem("userId");
-  return storedUserId ? storedUserId : "1";
-};
+const PAGE_SIZE = 10;
 
 const AllTransactionsPage = () => {
-  const [userId, setUserId] = useState(getInitialUserId());
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const { userId } = useAuth();
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -34,6 +30,7 @@ const AllTransactionsPage = () => {
     const { data, count, error } = await supabase
       .from("transacoes")
       .select("*", { count: "exact" })
+      .or(`remetente_id.eq.${userId},receptor_id.eq.${userId}`)
       .order("criado_em", { ascending: false })
       .range(from, to);
     if (data) {
@@ -52,7 +49,7 @@ const AllTransactionsPage = () => {
   }, [page]);
 
   return (
-    <div className="flex-col gap-10 padding-25">
+    <div className="flex-col gap-10 padding-25 desktop-fit">
       <div className="flex-col text-center margin-10">
         <span className="text-big">Todas as Transações</span>
         <span className="text-gray">
@@ -71,7 +68,7 @@ const AllTransactionsPage = () => {
           {loading ? (
             <span>carregando...</span>
           ) : transactions.length === 0 ? (
-            <span>Nenhuma transação encontrada.</span>
+            <span className="text-gray">Nenhuma transação encontrada.</span>
           ) : (
             <ul
               style={{

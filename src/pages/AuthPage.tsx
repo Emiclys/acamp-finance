@@ -20,16 +20,22 @@ const AuthPage = () => {
 
           <div className="flex-row margin-10 gap-10">
             <button
-              className="button-gray w-100p"
+              className={
+                currentTab == "entrar" ? "button w-100p" : "button-gray w-100p"
+              }
               onClick={() => setCurrentTab("entrar")}
             >
-              Entrar
+              Login
             </button>
             <button
-              className="button-gray w-100p"
+              className={
+                currentTab == "cadastrar"
+                  ? "button w-100p"
+                  : "button-gray w-100p"
+              }
               onClick={() => setCurrentTab("cadastrar")}
             >
-              Cadastrar
+              Cadastro
             </button>
           </div>
 

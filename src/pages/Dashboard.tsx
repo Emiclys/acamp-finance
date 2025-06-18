@@ -3,6 +3,7 @@ import { formatCurrency } from "../utils/utils";
 import supabase from "../supabase";
 import "../index.css";
 import "../style/dashboard.css";
+import { useAuth } from "../hooks/useAuth";
 
 // Definição do tipo para transação
 interface Transaction {
@@ -14,29 +15,29 @@ interface Transaction {
   tipo: string;
 }
 
-const getInitialUserId = () => {
-  const storedUserId = sessionStorage.getItem("userId");
-  return storedUserId ? storedUserId : "";
-};
+const channelA = supabase
+  .channel("balance-refresh")
+  .on(
+    "postgres_changes",
+    {
+      event: "*",
+      schema: "public",
+    },
+    (payload) => console.log(payload)
+  )
+  .subscribe();
 
 const Dashboard = () => {
   const [saldo, setSaldo] = useState(0);
-  const [userId, setUserId] = useState(getInitialUserId());
+  const { userId } = useAuth();
   const [loadingSaldo, setLoadingSaldo] = useState(true);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loadingTransactions, setLoadingTransactions] = useState(true);
-
-  console.log("Dashboard carregado para o usuário:", userId);
 
   if (!userId) {
     location.href = "/"; // Redireciona para a página de login se o usuário não estiver logado
     return null; // Evita renderizar o componente se não houver usuário
   }
-
-  const logout = () => {
-    sessionStorage.removeItem("userId");
-    location.href = "/"; // Redireciona para a página principal
-  };
 
   const fetchSaldo = async () => {
     const { data } = await supabase
@@ -58,7 +59,7 @@ const Dashboard = () => {
       .select("*")
       .or(`remetente_id.eq.${userId},receptor_id.eq.${userId}`)
       .order("criado_em", { ascending: false })
-      .limit(10);
+      .limit(6);
     if (data) {
       console.log("Transações encontradas:", data);
       setTransactions(data as Transaction[]);
@@ -80,7 +81,7 @@ const Dashboard = () => {
   }, [userId]);
 
   return (
-    <div className="flex-col gap-10 padding-25">
+    <div className="flex-col gap-10 padding-25 desktop-fit">
       <div className="flex-col text-center">
         <div className="flex-col margin-10">
           <span className="text-big">Acamp Finance</span>
@@ -148,7 +149,7 @@ const Dashboard = () => {
             {loadingTransactions ? (
               <span>carregando...</span>
             ) : transactions.length === 0 ? (
-              <span>Nenhuma transação encontrada.</span>
+              <span className="text-gray">Nenhuma transação encontrada.</span>
             ) : (
               <ul
                 style={{

@@ -1,6 +1,24 @@
 @font-face {
-  font-family: 'SFPro-Regular';
+  font-family: "SFPro-Regular";
   src: url(/src/fonts/SFProDisplay-Regular.ttf);
+}
+
+@media screen and (min-width: 700px) {
+  .desktop-fit {
+    width: 350px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.15s ease;
+    border-radius: 0px;
+    border: solid 1px var(--bg-color);
+  }
+
+  .desktop-fit:hover {
+    border: solid 1px var(--secondary-gray);
+    border-radius: 15px;
+  }
 }
 
 :root {
@@ -23,7 +41,7 @@ body {
   margin: 0;
   background-color: var(--bg-color);
   color: var(--txt-color);
-  font-family: 'SFPro-Regular', sans-serif;
+  font-family: "SFPro-Regular", sans-serif;
   font-size: 18px;
 }
 
@@ -36,6 +54,18 @@ body {
   font-size: 14px;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.button-disabled {
+  background-color: var(--secondary-gray);
+  color: #8b8b8b;
+  cursor: default;
+  border: 0;
+  padding: 8px 12px;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 4px;
   transition: background-color 0.15s ease;
 }
 
@@ -186,7 +216,6 @@ input[type="number"] {
 
 .text-big {
   font-size: 28px;
-  
 }
 
 .text-gray {

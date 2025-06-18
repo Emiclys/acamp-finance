@@ -5,6 +5,7 @@ import supabase from "../supabase";
 const SendPage = () => {
   const [receptorId, setReceptorId] = useState("");
   const [receptorName, setReceptorName] = useState("Digite o ID do receptor");
+  const [zeroedAmount, setZeroedAmount] = useState(true);
   const [receptorError, setReceptorError] = useState(true);
   const [transferValue, setTransferValue] = useState("");
   const [formattedValue, setFormattedValue] = useState("");
@@ -50,6 +51,7 @@ const SendPage = () => {
     const numeric = parseFloat(raw) / 100;
     setTransferValue(raw);
     setFormattedValue(formatCurrency(numeric));
+    setZeroedAmount(numeric == 0); // não deixa o usuário fazer pix de 0,00 merrecas
     // Verifica se o valor é maior que o saldo
     if (numeric > saldo) {
       setValueError("Saldo insuficiente para a transferência.");
@@ -176,7 +178,7 @@ const SendPage = () => {
   };
 
   return (
-    <div className="flex-col gap-10 padding-25">
+    <div className="flex-col gap-10 padding-25 desktop-fit">
       <div className="flex-col text-center margin-10">
         <span className="text-big">Fazer um PIX</span>
         <span className="text-gray">
@@ -188,12 +190,13 @@ const SendPage = () => {
         <div className="card-content">
           <div className="flex-col gap-10">
             <div className="flex-left flex-col">
-              <span>ID do recebedor</span>
+              <span>ID de destino</span>
               <input
                 type="text"
                 maxLength={4}
                 onChange={(e) => handleReceptorIdChange(e)}
                 placeholder="ID"
+                disabled={loadingSaldo || sending}
               />
 
               {receptorName && (
@@ -209,6 +212,7 @@ const SendPage = () => {
                     type="text"
                     value={formattedValue}
                     onChange={handleValueChange}
+                    disabled={loadingSaldo || sending}
                     placeholder="0,00"
                     maxLength={14}
                   />
@@ -218,15 +222,31 @@ const SendPage = () => {
                     ? "carregando..."
                     : "Seu saldo: M$ " + formatCurrency(saldo)}
                 </span>
-                {!valueError && (
+                {!valueError && !zeroedAmount && (
                   <div className="flex-col margin-t-10">
                     <button
-                      className="button w-100p"
+                      className={
+                        sending || loadingSaldo
+                          ? "button-disabled w-100p"
+                          : "button w-100p"
+                      }
                       onClick={handleSend}
                       disabled={loadingSaldo || sending}
                     >
                       {sending ? "Enviando..." : "Fazer PIX"}
                     </button>
+                  </div>
+                )}
+
+                {zeroedAmount && (
+                  <div className="margin-t-10">
+                    <i>Insira um valor</i>
+                  </div>
+                )}
+
+                {!zeroedAmount && valueError && (
+                  <div className="margin-t-10">
+                    <i>Saldo insuficiente</i>
                   </div>
                 )}
               </div>

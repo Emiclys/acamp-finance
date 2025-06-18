@@ -9,7 +9,7 @@ const ChargePage = () => {
   };
 
   return (
-    <div className="flex-col gap-10 padding-25">
+    <div className="flex-col gap-10 padding-25 desktop-fit">
       <div className="flex-col text-center margin-10">
         <span className="text-big">Cobrar Merreca</span>
         <span className="text-gray">

@@ -60,7 +60,7 @@ const PixSuccess = () => {
   return (
     <>
       {!errorLoading ? (
-        <div className="flex-col align-left gap-10 padding-25">
+        <div className="flex-col align-left gap-10 padding-25 desktop-fit">
           <h1 className="text-2xl font-bold">
             Comprovante de Transferência PIX
           </h1>

@@ -3,15 +3,38 @@ import supabase from "../supabase";
 import { GenerateRandom } from "../utils/utils";
 import "../index.css";
 import "../style/authpage.css";
+import { useToast } from "./toast";
+import { useAuth } from "../hooks/useAuth";
 
 const RegisterForm = () => {
+  const [signingUp, setSigningUp] = useState(false);
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const { login } = useAuth();
+  const showToast = useToast();
 
   const handleSubmit = async () => {
-    await supabase
+    if (!name || !password) {
+      showToast("Erro", "Preencha todos os campos", "info");
+      return;
+    }
+
+    setSigningUp(true);
+
+    const newUserId = GenerateRandom(4);
+
+    const { error: errorCreating } = await supabase
       .from("usuarios")
-      .insert([{ id: GenerateRandom(4), nome: name, senha: password }]);
+      .insert([{ id: newUserId, nome: name, senha: password }]);
+
+    if (errorCreating) {
+      showToast("Erro ao criar conta", errorCreating.message, "error");
+    } else {
+      login(newUserId);
+      location.href = "/dashboard";
+    }
+
+    setSigningUp(false);
   };
 
   return (
@@ -37,7 +60,11 @@ const RegisterForm = () => {
       </div>
 
       <div className="flex-row gap-10">
-        <button className="button w-100p" onClick={handleSubmit}>
+        <button
+          className={signingUp ? "button-disabled w-100p" : "button w-100p"}
+          disabled={signingUp}
+          onClick={handleSubmit}
+        >
           Criar conta
         </button>
       </div>
