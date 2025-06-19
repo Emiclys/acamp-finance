@@ -4,6 +4,7 @@ import supabase from "../supabase";
 import "../index.css";
 import "../style/dashboard.css";
 import { useAuth } from "../hooks/useAuth";
+import type { RealtimeChannel } from "@supabase/supabase-js";
 
 // Definição do tipo para transação
 interface Transaction {
@@ -15,20 +16,11 @@ interface Transaction {
   tipo: string;
 }
 
-const channelA = supabase
-  .channel("balance-refresh")
-  .on(
-    "postgres_changes",
-    {
-      event: "*",
-      schema: "public",
-    },
-    (payload) => console.log(payload)
-  )
-  .subscribe();
+let channel: RealtimeChannel;
 
 const Dashboard = () => {
   const [saldo, setSaldo] = useState(0);
+  const [formattedSaldo, setFormattedSaldo] = useState("");
   const { userId } = useAuth();
   const [loadingSaldo, setLoadingSaldo] = useState(true);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -37,6 +29,28 @@ const Dashboard = () => {
   if (!userId) {
     location.href = "/"; // Redireciona para a página de login se o usuário não estiver logado
     return null; // Evita renderizar o componente se não houver usuário
+  }
+
+  if (!channel) {
+    channel = supabase
+      .channel("balance-refresh")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "usuarios",
+        },
+        (payload) => {
+          const userData = payload?.new;
+
+          if (userData?.id == userId) {
+            setSaldo(Number(userData?.dinheiro));
+            setFormattedSaldo(formatCurrency(Number(userData?.dinheiro)));
+          }
+        }
+      )
+      .subscribe();
   }
 
   const fetchSaldo = async () => {
@@ -48,6 +62,7 @@ const Dashboard = () => {
 
     if (data) {
       setSaldo(data?.dinheiro);
+      setFormattedSaldo(formatCurrency(data?.dinheiro));
       setLoadingSaldo(false);
     } else console.error("Erro ao buscar saldo");
   };
@@ -61,7 +76,6 @@ const Dashboard = () => {
       .order("criado_em", { ascending: false })
       .limit(6);
     if (data) {
-      console.log("Transações encontradas:", data);
       setTransactions(data as Transaction[]);
     } else {
       setTransactions([]);
@@ -95,7 +109,7 @@ const Dashboard = () => {
             <div className="card-title">Saldo</div>
             <div className="card-content">
               <span>
-                {loadingSaldo ? "carregando..." : "M$ " + formatCurrency(saldo)}
+                {loadingSaldo ? "carregando..." : "M$ " + formattedSaldo}
               </span>
             </div>
           </div>
