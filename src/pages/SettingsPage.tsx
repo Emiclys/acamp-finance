@@ -14,7 +14,7 @@ const SettingsPage = () => {
   const showToast = useToast();
 
   if (!isAuthenticated || userName == userNotFoundMessage) {
-    sessionStorage.setItem("userId", "");
+    localStorage.setItem("userId", "");
     location.href = "/"; // Redireciona para a página de login se o usuário não estiver logado
     return null; // Evita renderizar o componente se não houver usuário
   }
@@ -53,24 +53,11 @@ const SettingsPage = () => {
     setIsSaving(false);
   };
 
-  const resetFields = () => {
-    alert("em desenvolvimento.");
-  };
-
   return (
     <div className="flex-col gap-10 flex-center desktop-fit">
-      <h2>Configurações</h2>
-
-      <div className="flex-row gap-10 w-90p">
-        <button className="button-red w-100p" onClick={logout}>
-          Sair da conta
-        </button>
-        <button
-          className="button-gray w-100p"
-          onClick={() => (location.href = "/dashboard")}
-        >
-          Voltar ao Dashboard
-        </button>
+      <div className="flex-col text-center margin-10">
+        <span className="text-big">Configurações</span>
+        <span className="text-gray">Defina as informações da sua conta.</span>
       </div>
 
       <div className="card gap-10 margin-b-10 w-85p">
@@ -122,11 +109,20 @@ const SettingsPage = () => {
             >
               {isSaving ? "Salvando..." : "Salvar"}
             </button>
-            <button className="button-gray w-100p" onClick={resetFields}>
-              Resetar
-            </button>
           </div>
         </div>
+      </div>
+
+      <div className="flex-row gap-10 w-90p">
+        <button className="button-red w-100p" onClick={logout}>
+          Sair da conta
+        </button>
+        <button
+          className="button-gray w-100p"
+          onClick={() => (location.href = "/dashboard")}
+        >
+          Voltar ao Dashboard
+        </button>
       </div>
     </div>
   );

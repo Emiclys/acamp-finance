@@ -3,8 +3,13 @@ import LoginForm from "../components/LoginForm";
 import RegisterForm from "../components/RegisterForm";
 import "../index.css";
 import "../style/authpage.css";
+import { useAuth } from "../hooks/useAuth";
 
 const AuthPage = () => {
+  const { userId } = useAuth();
+
+  if (userId) location.href = "/dashboard";
+
   const [currentTab, setCurrentTab] = useState("entrar");
 
   return (

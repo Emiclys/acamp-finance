@@ -84,6 +84,10 @@ const Dashboard = () => {
     setLoadingTransactions(false);
   };
 
+  useEffect(() => {
+    fetchTransactions();
+  }, [saldo]);
+
   const gotoSettings = () => {
     location.href = "/settings";
   };
@@ -91,7 +95,6 @@ const Dashboard = () => {
   useEffect(() => {
     fetchSaldo();
     fetchTransactions();
-    console.log("Dashboard carregado para o usuário:", userId);
   }, [userId]);
 
   return (

@@ -4,20 +4,20 @@ import { getUserNameById } from "../utils/utils";
 export function useAuth() {
   const [userName, setUserName] = useState("");
 
-  // Faz login salvando o userId no sessionStorage
+  // Faz login salvando o userId no localStorage
   const login = useCallback((id: string) => {
-    sessionStorage.setItem("userId", id);
+    localStorage.setItem("userId", id);
   }, []);
 
   const getUserId = useCallback((): string => {
-    return sessionStorage.getItem("userId")
-      ? String(sessionStorage.getItem("userId"))
+    return localStorage.getItem("userId")
+      ? String(localStorage.getItem("userId"))
       : "";
   }, []);
 
-  // Faz logout removendo o userId do sessionStorage
+  // Faz logout removendo o userId do localStorage
   const logout = useCallback(() => {
-    sessionStorage.removeItem("userId");
+    localStorage.removeItem("userId");
     setUserName("");
     window.location.href = "/";
   }, []);

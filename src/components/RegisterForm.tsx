@@ -21,7 +21,14 @@ const RegisterForm = () => {
 
     setSigningUp(true);
 
-    const newUserId = GenerateRandom(4);
+    let newUserId = GenerateRandom(4);
+
+    // previne que dois ou mais usuários tenham o mesmo ID
+    while (
+      await supabase.from("usuarios").select().eq("id", newUserId).single()
+    ) {
+      newUserId = GenerateRandom(4);
+    }
 
     const { error: errorCreating } = await supabase
       .from("usuarios")

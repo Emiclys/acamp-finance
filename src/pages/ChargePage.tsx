@@ -1,6 +1,28 @@
+import { useState } from "react";
+import { useAuth } from "../hooks/useAuth";
+import { formatCurrency } from "../utils/utils";
+import QRCode from "react-qr-code";
+
 const ChargePage = () => {
+  const [formattedValue, setFormattedValue] = useState("");
+  const [amountToCharge, setAmountToCharge] = useState("0");
+  const [amount, setAmount] = useState("");
+  const { userId } = useAuth();
+
+  // Função para formatar o valor conforme digitado
+  const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let raw = e.target.value.replace(/\D/g, ""); // remove tudo que não for número
+    if (!raw) raw = "0";
+    setAmount(raw);
+    // Garante pelo menos 3 dígitos para centavos
+    while (raw.length < 3) raw = "0" + raw;
+    const numeric = parseFloat(raw) / 100;
+    setAmountToCharge(numeric.toString().replace(".", ""));
+    setFormattedValue(formatCurrency(numeric));
+  };
+
   const getUserId = () => {
-    const userId = sessionStorage.getItem("userId");
+    const userId = localStorage.getItem("userId");
     if (!userId) {
       console.warn("Nenhum ID de usuário encontrado no localStorage.");
       return "";
@@ -20,10 +42,43 @@ const ChargePage = () => {
       <div className="card">
         <div className="card-title">Cobrar</div>
         <div className="card-content flex-col gap-10">
-          <span className="text-gray">
-            Informe seu ID para que o outro possa fazer a transferência:
-          </span>
-          <span>{getUserId() || "[ID não encontrado]"}</span>
+          <div className="flex-col gap-10">
+            <span className="text-gray">Escaneie o QR Code:</span>
+            <span>Valor a ser cobrado</span>
+            <div className="flex-row flex-start">
+              <span className="margin-h-10">M$</span>
+              <input
+                type="text"
+                value={formattedValue}
+                onChange={handleValueChange}
+                disabled={false}
+                placeholder="0,00"
+                maxLength={14}
+              />
+            </div>
+            <div
+              style={{
+                background: "white",
+                padding: "16px",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <QRCode
+                value={
+                  "http://" +
+                  window.location.hostname +
+                  "/send/?userId=" +
+                  userId +
+                  (amountToCharge != "0" ? "&amount=" + amount : "")
+                }
+              />
+            </div>
+          </div>
+          <div className="flex-col gap-10">
+            <span className="text-gray">Ou informe seu ID:</span>
+            <span>{getUserId() || "[ID não encontrado]"}</span>
+          </div>
         </div>
       </div>
 
