@@ -150,11 +150,17 @@ body {
 .flex-row {
   display: flex;
   flex-direction: row;
+  width: 100%;
 }
 
 .align-left {
   display: flex;
   justify-content: flex-start;
+  text-align: left;
+}
+
+.text-small {
+  font-size: 14px;
 }
 
 .disabled-input {
@@ -207,6 +213,10 @@ input[type="number"]:disabled {
 
 .w-85p {
   width: 85%;
+}
+
+.w-80p {
+  width: 80%;
 }
 
 .w-50p {
@@ -279,4 +289,8 @@ input[type="number"]:disabled {
 
 .margin-10 {
   margin: 15px 0px;
+}
+
+.margin-l-10 {
+  margin-left: 10px;
 }

@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound";
 import ChargePage from "./pages/ChargePage";
 import AllTransactionsPage from "./pages/AllTransactionsPage";
 import SettingsPage from "./pages/SettingsPage";
+import AdminPage from "./pages/AdminPage";
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/pixsuccess/:transaction_id" element={<PixSuccess />} />
           <Route path="/all-transactions" element={<AllTransactionsPage />} />
+          <Route path="/admin" element={<AdminPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

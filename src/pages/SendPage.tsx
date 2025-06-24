@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { formatCurrency, GenerateRandom } from "../utils/utils";
 import { useSearchParams } from "react-router-dom";
-import supabase from "../supabase";
+import supabase from "../supabase/supabase";
 import PasswordConfirmationModal from "../components/PasswordConfirmationModal";
 
 const SendPage = () => {

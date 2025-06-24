@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { formatCurrency } from "../utils/utils";
-import supabase from "../supabase";
+import supabase from "../supabase/supabase";
 import { useAuth } from "../hooks/useAuth";
 import "../index.css";
 import "../style/dashboard.css";

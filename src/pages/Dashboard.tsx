@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { formatCurrency } from "../utils/utils";
-import supabase from "../supabase";
+import supabase from "../supabase/supabase";
 import "../index.css";
 import "../style/dashboard.css";
 import { useAuth } from "../hooks/useAuth";
 import type { RealtimeChannel } from "@supabase/supabase-js";
+import { CgArrowLeft, CgArrowRight } from "react-icons/cg";
 
 // Definição do tipo para transação
 interface Transaction {
@@ -16,6 +17,14 @@ interface Transaction {
   tipo: string;
 }
 
+interface Yield {
+  id: string;
+  criado_em: string;
+  id_usuario: string;
+  porcentagem: string;
+  valor: number;
+}
+
 let channel: RealtimeChannel;
 
 const Dashboard = () => {
@@ -24,6 +33,8 @@ const Dashboard = () => {
   const { userId } = useAuth();
   const [loadingSaldo, setLoadingSaldo] = useState(true);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [yields, setYields] = useState<Yield[]>([]);
+  const [loadingYields, setLoadingYields] = useState(true);
   const [loadingTransactions, setLoadingTransactions] = useState(true);
 
   if (!userId) {
@@ -52,6 +63,24 @@ const Dashboard = () => {
       )
       .subscribe();
   }
+
+  const fetchYields = async () => {
+    setLoadingYields(true);
+
+    const { data } = await supabase
+      .from("rendimentos")
+      .select()
+      .eq("id_usuario", userId)
+      .order("criado_em", { ascending: false })
+      .limit(6);
+
+    if (data) {
+      setYields(data as Yield[]);
+      console.log(data);
+    } else setYields([]);
+
+    setLoadingYields(false);
+  };
 
   const fetchSaldo = async () => {
     const { data } = await supabase
@@ -86,6 +115,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchTransactions();
+    fetchYields();
   }, [saldo]);
 
   const gotoSettings = () => {
@@ -95,6 +125,7 @@ const Dashboard = () => {
   useEffect(() => {
     fetchSaldo();
     fetchTransactions();
+    fetchYields();
   }, [userId]);
 
   return (
@@ -109,8 +140,8 @@ const Dashboard = () => {
 
         <div className="flex-col gap-10 margin-b-10">
           <div className="card">
-            <div className="card-title">Saldo</div>
-            <div className="card-content">
+            <div className="flex-col align-left">
+              <span className="text-gray text-small">Saldo</span>
               <span>
                 {loadingSaldo ? "carregando..." : "M$ " + formattedSaldo}
               </span>
@@ -141,6 +172,51 @@ const Dashboard = () => {
           </button>
         </div>
 
+        <div className="card gap-10 margin-b-10">
+          <div className="card-title">Histórico de Rendimentos</div>
+          <div className="card-content">
+            {loadingYields ? (
+              <span>carregando...</span>
+            ) : yields.length === 0 ? (
+              <span className="text-gray">Nenhuma transação encontrada.</span>
+            ) : (
+              <ul
+                style={{
+                  padding: 0,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 8,
+                  margin: 0,
+                  width: "93%",
+                }}
+              >
+                {yields.map((y) => (
+                  <li
+                    key={y.id}
+                    style={{
+                      backgroundColor: "#303030",
+                      borderRadius: 5,
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "left",
+                      padding: "10px 12px",
+                      width: "100%",
+                    }}
+                  >
+                    <span>
+                      Rendimento de {y.porcentagem + "%"}{" "}
+                      <i style={{ color: "green" }}>
+                        {" M$ " + formatCurrency(y.valor)}
+                      </i>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+
+        {/* Histórico de Transações */}
         <div className="card gap-10 margin-b-10">
           <div
             className="card-title"
@@ -196,6 +272,11 @@ const Dashboard = () => {
                     }
                   >
                     <span style={{ fontWeight: 600 }}>
+                      {tx.remetente_id === userId ? (
+                        <CgArrowRight />
+                      ) : (
+                        <CgArrowLeft />
+                      )}
                       {tx.remetente_id === userId
                         ? "Enviado para"
                         : "Recebido de"}{" "}

@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
-import supabase from "../supabase";
+import supabase from "../supabase/supabase";
 import { useToast } from "../components/toast";
 import { userNotFoundMessage } from "../utils/utils";
 import "../index.css";
 import "../style/settingspage.css";
 
 const SettingsPage = () => {
-  const [isSaving, setIsSaving] = useState(false);
-  const [newName, setNewName] = useState("");
-  const [newPassword, setNewPassword] = useState("");
   const { isAuthenticated, userName, userId, logout } = useAuth();
+  const [isSaving, setIsSaving] = useState(false);
+  const [newName, setNewName] = useState(userName);
+  const [newPassword, setNewPassword] = useState("");
   const showToast = useToast();
 
   if (!isAuthenticated || userName == userNotFoundMessage) {
@@ -67,7 +67,7 @@ const SettingsPage = () => {
 
         <div className="flex-col gap-10">
           <div className="flex-col flex-left">
-            <span>Nome:</span>
+            <span>Nome</span>
             <input
               type="text"
               onChange={(e) => setNewName(e.target.value)}
@@ -76,7 +76,7 @@ const SettingsPage = () => {
           </div>
 
           <div className="flex-col flex-left">
-            <span>Nova senha:</span>
+            <span>Nova senha</span>
             <input
               type="text"
               onChange={(e) => setNewPassword(e.target.value)}
@@ -85,7 +85,7 @@ const SettingsPage = () => {
           </div>
 
           <div className="flex-col flex-left">
-            <span>ID:</span>
+            <span>ID</span>
             <input
               type="text"
               value={userId}
@@ -99,12 +99,8 @@ const SettingsPage = () => {
 
           <div className="h-box">
             <button
-              className={
-                isSaving || newName == userName || !newName
-                  ? "button-disabled w-100p"
-                  : "button w-100p"
-              }
-              disabled={isSaving || newName == userName || !newName}
+              className="button w-100p"
+              disabled={isSaving || (newName == "" && newPassword == "")}
               onClick={handleSave}
             >
               {isSaving ? "Salvando..." : "Salvar"}

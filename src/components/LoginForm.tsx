@@ -1,9 +1,10 @@
-import supabase from "../supabase";
+import supabase from "../supabase/supabase";
 import Toast, { useToast } from "./toast";
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import "../index.css";
 import "../style/authpage.css";
+import { limits } from "../data/limits";
 
 const LoginForm = () => {
   const { login } = useAuth();
@@ -45,10 +46,10 @@ const LoginForm = () => {
         <div className="flex-col align-left">
           <span>ID</span>
           <input
-            type="text"
+            type="number"
             onChange={(e) => setId(e.target.value)}
             placeholder="Digite seu ID"
-            maxLength={4}
+            maxLength={limits.idLength}
           />
         </div>
 
@@ -65,7 +66,7 @@ const LoginForm = () => {
         <div className="flex-row gap-10">
           <button
             className={signingIn ? "button-disabled w-100p" : "button w-100p"}
-            disabled={signingIn}
+            disabled={signingIn || password.length < 6 || id.length < 4}
             onClick={handleSubmit}
           >
             {signingIn ? "Entrando..." : "Entrar"}

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import supabase from "../supabase";
+import supabase from "../supabase/supabase";
 import { useAuth } from "../hooks/useAuth";
 
 type PasswordConfirmationModalProps = {
@@ -64,7 +64,7 @@ const PasswordConfirmationModal: React.FC<PasswordConfirmationModalProps> = ({
           <div className="flex-row gap-10">
             <button
               className="button w-100p"
-              disabled={!password}
+              disabled={password.length < 6}
               onClick={handleConfirm}
             >
               Confirmar

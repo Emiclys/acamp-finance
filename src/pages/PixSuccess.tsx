@@ -1,4 +1,4 @@
-import supabase from "../supabase";
+import supabase from "../supabase/supabase";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { formatCurrency, getUserNameById } from "../utils/utils";
