@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useToast } from "../components/toast";
 import supabase from "../supabase/supabase";
 import "../index.css";
 import "../style/settingspage.css";
+import Button from "../components/base/Button";
+import LoadingScreen from "../components/LoadingScreen";
 
 const SettingsPage = () => {
   const { isAuthenticated, userName, userId, logout } = useAuth();
@@ -17,9 +19,17 @@ const SettingsPage = () => {
     return null; // Evita renderizar o componente se não houver usuário
   }
 
+  useEffect(() => {
+    setNewName(userName);
+  }, [userName]);
+
   const handleSave = async () => {
-    if (newPassword.length < 6) {
-      showToast("Erro", "A senha deve conter no mínimo 6 dígitos", "error");
+    if (newPassword.length < 6 && newPassword.length > 0) {
+      showToast(
+        "Erro",
+        "A nova senha deve conter no mínimo 6 dígitos",
+        "error"
+      );
       return;
     }
 
@@ -56,6 +66,9 @@ const SettingsPage = () => {
     setIsSaving(false);
   };
 
+  // se ainda não carregou, mostra a tela de carregamento
+  if (!userName) return <LoadingScreen />;
+
   return (
     <div className="flex-col gap-10 flex-center desktop-fit">
       <div className="flex-col text-center margin-10">
@@ -75,6 +88,7 @@ const SettingsPage = () => {
               type="text"
               onChange={(e) => setNewName(e.target.value)}
               defaultValue={userName}
+              placeholder={userName ? "" : "carregando..."}
             />
           </div>
 
@@ -83,7 +97,7 @@ const SettingsPage = () => {
             <input
               type="text"
               onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="insira uma nova senha aqui"
+              placeholder="Deixe em branco para não alterar"
             />
           </div>
 
@@ -100,28 +114,26 @@ const SettingsPage = () => {
             </i>
           </div>
 
-          <div className="h-box">
-            <button
-              className="button w-100p"
-              disabled={isSaving || (newName == "" && newPassword == "")}
-              onClick={handleSave}
-            >
-              {isSaving ? "Salvando..." : "Salvar"}
-            </button>
-          </div>
+          <Button
+            label={isSaving ? "Salvando..." : "Salvar"}
+            onClick={handleSave}
+            disabled={isSaving}
+          />
         </div>
-      </div>
-
-      <div className="flex-row gap-10 w-90p">
-        <button className="button-red w-100p" onClick={logout}>
-          Sair da conta
-        </button>
-        <button
-          className="button-gray w-100p"
-          onClick={() => (location.href = "/dashboard")}
-        >
-          Voltar ao Dashboard
-        </button>
+        <div className="flex-row gap-10 margin-t-10">
+          <Button
+            label="Sair da conta"
+            disabled={isSaving}
+            variant="danger"
+            onClick={logout}
+          />
+          <Button
+            label="Voltar"
+            variant="secondary"
+            disabled={isSaving}
+            onClick={() => (location.href = "/dashboard")}
+          />
+        </div>
       </div>
     </div>
   );

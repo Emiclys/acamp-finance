@@ -14,6 +14,7 @@ const PasswordConfirmationModal: React.FC<PasswordConfirmationModalProps> = ({
   onClose,
   onConfirm,
 }) => {
+  const [confirming, setConfirming] = useState(false);
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const { userId } = useAuth();
@@ -26,6 +27,8 @@ const PasswordConfirmationModal: React.FC<PasswordConfirmationModalProps> = ({
   const handleConfirm = async () => {
     if (!password) return;
 
+    setConfirming(true);
+
     const { data } = await supabase
       .from("usuarios")
       .select()
@@ -35,11 +38,13 @@ const PasswordConfirmationModal: React.FC<PasswordConfirmationModalProps> = ({
 
     if (!data) {
       setMessage("Senha incorreta");
+      setConfirming(false);
       return;
     }
 
     onConfirm(password);
     setPassword("");
+    setConfirming(false);
   };
 
   const handleCancel = () => {
@@ -65,13 +70,14 @@ const PasswordConfirmationModal: React.FC<PasswordConfirmationModalProps> = ({
           <div className="flex-row gap-10">
             <Button
               label="Confirmar"
-              disabled={password.length < 6}
+              disabled={password.length < 6 || confirming}
               onClick={handleConfirm}
             />
 
             <Button
               label="Cancelar"
               variant="secondary"
+              disabled={confirming}
               onClick={handleCancel}
             />
           </div>

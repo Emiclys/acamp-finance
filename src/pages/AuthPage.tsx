@@ -4,6 +4,7 @@ import RegisterForm from "../components/RegisterForm";
 import "../index.css";
 import "../style/authpage.css";
 import { useAuth } from "../hooks/useAuth";
+import Button from "../components/base/Button";
 
 const AuthPage = () => {
   const { userId } = useAuth();
@@ -24,24 +25,16 @@ const AuthPage = () => {
           </div>
 
           <div className="flex-row margin-10 gap-10">
-            <button
-              className={
-                currentTab == "entrar" ? "button w-100p" : "button-gray w-100p"
-              }
+            <Button
+              label="Login"
               onClick={() => setCurrentTab("entrar")}
-            >
-              Login
-            </button>
-            <button
-              className={
-                currentTab == "cadastrar"
-                  ? "button w-100p"
-                  : "button-gray w-100p"
-              }
+              variant={currentTab == "entrar" ? "primary" : "secondary"}
+            />
+            <Button
+              label="Cadastro"
               onClick={() => setCurrentTab("cadastrar")}
-            >
-              Cadastro
-            </button>
+              variant={currentTab == "cadastrar" ? "primary" : "secondary"}
+            />
           </div>
 
           {currentTab === "entrar" && <LoginForm />}

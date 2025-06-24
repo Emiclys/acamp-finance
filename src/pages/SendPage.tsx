@@ -3,6 +3,7 @@ import { formatCurrency, GenerateRandom } from "../utils/utils";
 import { useSearchParams } from "react-router-dom";
 import supabase from "../supabase/supabase";
 import PasswordConfirmationModal from "../components/PasswordConfirmationModal";
+import Button from "../components/base/Button";
 
 const SendPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -300,80 +301,73 @@ const SendPage = () => {
         </div>
         <div className="card margin-10">
           <div className="card-title">Enviar merreca</div>
-          <div className="card-content">
-            <div className="flex-col gap-10">
-              <div className="flex-left flex-col">
-                <span>ID de destino</span>
-                <input
-                  type="text"
-                  maxLength={4}
-                  onChange={(e) => handleReceptorIdChange(e)}
-                  defaultValue={receptorIdViaUrl}
-                  placeholder="ID"
-                  disabled={loadingSaldo || sending || preDefinedId}
-                />
+          <div className="flex-col gap-10">
+            <div className="flex-left flex-col">
+              <span>ID de destino</span>
+              <input
+                type="text"
+                maxLength={4}
+                onChange={(e) => handleReceptorIdChange(e)}
+                defaultValue={receptorIdViaUrl}
+                placeholder="ID"
+                disabled={loadingSaldo || sending || preDefinedId}
+              />
 
-                {receptorName && (
-                  <span className="text-gray margin-t-10">{receptorName}</span>
-                )}
-              </div>
-              {!receptorError && (
-                <div className="flex-left flex-col">
-                  <span>Valor</span>
-                  <div className="flex-row flex-center">
-                    <span className="margin-h-10">M$</span>
-                    <input
-                      type="text"
-                      value={formattedValue}
-                      onChange={handleValueChange}
-                      disabled={loadingSaldo || sending || preDefinedValue}
-                      placeholder="0,00"
-                      maxLength={14}
-                    />
-                  </div>
-                  <span className="margin-t-10 text-gray">
-                    {loadingSaldo
-                      ? "carregando..."
-                      : "Seu saldo: M$ " + formatCurrency(saldo)}
-                  </span>
-                  {!valueError && !zeroedAmount && (
-                    <div className="flex-col margin-t-10">
-                      <button
-                        className={
-                          sending || loadingSaldo
-                            ? "button-disabled w-100p"
-                            : "button w-100p"
-                        }
-                        onClick={handleOpenModal}
-                        disabled={loadingSaldo || sending}
-                      >
-                        {sending ? "Enviando..." : "Fazer PIX"}
-                      </button>
-                    </div>
-                  )}
-
-                  {zeroedAmount && (
-                    <div className="margin-t-10">
-                      <i>Insira um valor</i>
-                    </div>
-                  )}
-
-                  {!zeroedAmount && valueError && (
-                    <div className="margin-t-10">
-                      <i>{valueError}</i>
-                    </div>
-                  )}
-                </div>
+              {receptorName && (
+                <span className="text-gray margin-t-10">{receptorName}</span>
               )}
             </div>
+            {!receptorError && (
+              <div className="flex-left flex-col">
+                <span>Valor</span>
+                <div className="flex-row">
+                  <span className="margin-h-10 flex-center">M$</span>
+                  <input
+                    type="text"
+                    value={formattedValue}
+                    onChange={handleValueChange}
+                    disabled={loadingSaldo || sending || preDefinedValue}
+                    placeholder="0,00"
+                    maxLength={14}
+                  />
+                </div>
+                <span className="margin-t-10 text-gray">
+                  {loadingSaldo
+                    ? "carregando..."
+                    : "Seu saldo: M$ " + formatCurrency(saldo)}
+                </span>
+                {!valueError && !zeroedAmount && (
+                  <div className="flex-col margin-t-10">
+                    <Button
+                      label={sending ? "Transferindo..." : "Transferir"}
+                      onClick={handleOpenModal}
+                      disabled={loadingSaldo || sending}
+                    />
+                  </div>
+                )}
+
+                {zeroedAmount && (
+                  <div className="margin-t-10">
+                    <i>Insira um valor</i>
+                  </div>
+                )}
+
+                {!zeroedAmount && valueError && (
+                  <div className="margin-t-10">
+                    <i>{valueError}</i>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
-        <button
-          onClick={() => (location.href = "/dashboard")}
-          className="button-gray"
-        >
-          Voltar ao dashboard
-        </button>
+        <div className="margin-t-10">
+          <Button
+            label="Voltar"
+            variant="secondary"
+            onClick={() => (location.href = "/dashboard")}
+          />
+        </div>
       </div>
     </>
   );

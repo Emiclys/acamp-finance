@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useToast } from "./toast";
 import { useAuth } from "../hooks/useAuth";
-import { limits } from "../data/limits";
 import supabase from "../supabase/supabase";
 import "../index.css";
 import "../style/authpage.css";
+import Button from "./base/Button";
 
 const RegisterForm = () => {
   const [signingUp, setSigningUp] = useState(false);
@@ -15,6 +15,9 @@ const RegisterForm = () => {
   const [password, setPassword] = useState("");
   const { login } = useAuth();
   const showToast = useToast();
+
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  const passwordInputRef = useRef<HTMLInputElement>(null);
 
   const handleId = async (value: string) => {
     setId(value);
@@ -32,7 +35,10 @@ const RegisterForm = () => {
         setErrorMessage("ID indisponível");
         setPassword("");
         setName("");
-      } else setErrorMessage("");
+      } else {
+        setErrorMessage("Depois de criado, o ID não pode ser alterado.");
+        nameInputRef.current?.focus();
+      }
     } else {
       setIdAvailable(false);
       setPassword("");
@@ -69,7 +75,8 @@ const RegisterForm = () => {
           type="number"
           onChange={(e) => handleId(e.target.value)}
           placeholder="Crie um ID"
-          maxLength={limits.idLength}
+          maxLength={4}
+          max={9999}
         />
       </div>
 
@@ -84,6 +91,7 @@ const RegisterForm = () => {
               onChange={(e) => setName(e.target.value)}
               placeholder="Digite seu nome"
               maxLength={50}
+              ref={nameInputRef}
             />
           </div>
 
@@ -94,6 +102,7 @@ const RegisterForm = () => {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Crie sua senha"
               maxLength={50}
+              ref={passwordInputRef}
             />
           </div>
 
@@ -102,13 +111,11 @@ const RegisterForm = () => {
           )}
 
           <div className="flex-row gap-10">
-            <button
-              className={signingUp ? "button-disabled w-100p" : "button w-100p"}
+            <Button
+              label="Criar conta"
               disabled={signingUp || !id || password.length < 6 || !name}
               onClick={handleSubmit}
-            >
-              Criar conta
-            </button>
+            />
           </div>
         </>
       )}

@@ -7,6 +7,7 @@ import { useAuth } from "../hooks/useAuth";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import { CgArrowLeft, CgArrowRight } from "react-icons/cg";
 import Button from "../components/base/Button";
+import LoadingScreen from "../components/LoadingScreen";
 
 // Definição do tipo para transação
 interface Transaction {
@@ -31,7 +32,7 @@ let channel: RealtimeChannel;
 const Dashboard = () => {
   const [saldo, setSaldo] = useState(0);
   const [formattedSaldo, setFormattedSaldo] = useState("");
-  const { userId } = useAuth();
+  const { userId, userName } = useAuth();
   const [loadingSaldo, setLoadingSaldo] = useState(true);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [yields, setYields] = useState<Yield[]>([]);
@@ -128,6 +129,8 @@ const Dashboard = () => {
     fetchYields();
   }, [userId]);
 
+  if (loadingTransactions || loadingYields) return <LoadingScreen />;
+
   return (
     <div className="flex-col gap-10 padding-25 desktop-fit">
       <div className="flex-col text-center">
@@ -138,7 +141,8 @@ const Dashboard = () => {
           </span>
         </div>
 
-        <div className="flex-col gap-10 margin-b-10">
+        <div className="flex-col gap-10 margin-b-10 margin-t-10">
+          <div className="align-left">Olá, {userName}!</div>
           <div className="card">
             <div className="flex-col align-left">
               <span className="text-gray text-small">Saldo</span>
@@ -171,7 +175,7 @@ const Dashboard = () => {
         />
 
         <div className="card gap-10 margin-tb-10">
-          <div className="card-title">Histórico de Rendimentos</div>
+          <div className="card-title">Últimos Rendimentos</div>
           <div className="card-content">
             {loadingYields ? (
               <span>carregando...</span>

@@ -23,6 +23,12 @@ const LoginForm = () => {
       return;
     }
 
+    if (id.length > limits.idLength) {
+      showToast("Erro", "O ID deve ser de 4 dígitos", "info");
+      setSigningIn(false);
+      return;
+    }
+
     const { data } = await supabase
       .from("usuarios")
       .select()

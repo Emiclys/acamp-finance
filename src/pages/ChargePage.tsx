@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { formatCurrency } from "../utils/utils";
 import QRCode from "react-qr-code";
+import Button from "../components/base/Button";
 
 const ChargePage = () => {
   const [formattedValue, setFormattedValue] = useState("");
@@ -82,12 +83,11 @@ const ChargePage = () => {
         </div>
       </div>
 
-      <button
+      <Button
+        label="Voltar"
+        variant="secondary"
         onClick={() => (location.href = "/dashboard")}
-        className="button-gray"
-      >
-        Voltar ao dashboard
-      </button>
+      />
     </div>
   );
 };

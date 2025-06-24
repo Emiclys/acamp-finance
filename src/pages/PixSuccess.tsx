@@ -2,6 +2,7 @@ import supabase from "../supabase/supabase";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { formatCurrency, getUserNameById } from "../utils/utils";
+import Button from "../components/base/Button";
 
 const PixSuccess = () => {
   const { transaction_id } = useParams();
@@ -93,12 +94,10 @@ const PixSuccess = () => {
           </p>
 
           <div className="flex-row gap-10">
-            <button
-              className="button w-100p margin-t-10"
+            <Button
+              label="Voltar ao Dashboard"
               onClick={() => (location.href = "/dashboard")}
-            >
-              Voltar ao Dashboard
-            </button>
+            />
           </div>
 
           <p className="text-gray text-center">
