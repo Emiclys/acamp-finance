@@ -196,7 +196,7 @@ const Dashboard = () => {
                     style={{
                       backgroundColor: "#303030",
                       borderRadius: 5,
-                      cursor: "pointer",
+                      cursor: "default",
                       display: "flex",
                       alignItems: "left",
                       padding: "10px 12px",
