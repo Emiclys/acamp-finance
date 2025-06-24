@@ -83,63 +83,35 @@ body {
 }
 
 .button {
+  border: 0;
+  border-radius: 5px;
+  outline: 0;
+  cursor: pointer;
+  padding: 8px 12px;
+  transition: background 0.1s ease-in-out;
+  font-size: 16px;
+  font-family: inherit;
+  width: 100%;
+}
+
+.bg-green {
   background-color: var(--green);
-  color: white;
-  border: 0;
-  padding: 12px 15px;
-  font-weight: 600;
-  font-size: 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.15s ease;
 }
 
-.button-disabled {
+.bg-gray {
   background-color: var(--secondary-gray);
-  color: #8b8b8b;
-  cursor: default;
-  border: 0;
-  padding: 12px 15px;
-  font-weight: 600;
-  font-size: 14px;
-  border-radius: 8px;
-  transition: background-color 0.15s ease;
 }
 
-.button-gray {
-  background-color: var(--secondary-gray);
-  color: white;
-  border: 0;
-  padding: 12px 15px;
-  font-weight: 600;
-  font-size: 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.15s ease;
-}
-
-.button-red {
-  background-color: var(--primary-red);
-  color: white;
-  border: 0;
-  padding: 12px 15px;
-  font-weight: 600;
-  font-size: 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.15s ease;
-}
-
-.button-red:hover {
-  background-color: var(--primary-red-hover);
-}
-
-.button-gray:hover {
+.bg-gray:hover {
   background-color: var(--secondary-gray-hover);
 }
 
-.button:hover {
+.bg-green:hover {
   background-color: var(--green-hover);
+}
+
+.text-white {
+  color: white;
 }
 
 .flex-col {
@@ -229,6 +201,11 @@ input[type="number"]:disabled {
 
 .margin-t-10 {
   margin-top: 10px;
+}
+
+.margin-tb-10 {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .padding-25 {

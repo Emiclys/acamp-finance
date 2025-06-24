@@ -6,6 +6,7 @@ import "../style/dashboard.css";
 import { useAuth } from "../hooks/useAuth";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import { CgArrowLeft, CgArrowRight } from "react-icons/cg";
+import Button from "../components/base/Button";
 
 // Definição do tipo para transação
 interface Transaction {
@@ -76,7 +77,6 @@ const Dashboard = () => {
 
     if (data) {
       setYields(data as Yield[]);
-      console.log(data);
     } else setYields([]);
 
     setLoadingYields(false);
@@ -150,29 +150,27 @@ const Dashboard = () => {
         </div>
 
         <div className="flex-row gap-10 margin-b-10">
-          <button
+          <Button
+            label="Fazer PIX"
             disabled={loadingSaldo}
             onClick={() => (location.href = "/send")}
-            className="button w-100p"
-          >
-            Fazer um PIX
-          </button>
-          <button
+          />
+
+          <Button
+            label="Cobrar"
             disabled={loadingSaldo}
             onClick={() => (location.href = "/charge")}
-            className="button-gray w-100p"
-          >
-            Cobrar
-          </button>
+            variant="secondary"
+          />
         </div>
 
-        <div className="flex-row gap-10 margin-b-10">
-          <button className="button-gray w-100p" onClick={gotoSettings}>
-            Configurações
-          </button>
-        </div>
+        <Button
+          label="Configurações"
+          onClick={gotoSettings}
+          variant="secondary"
+        />
 
-        <div className="card gap-10 margin-b-10">
+        <div className="card gap-10 margin-tb-10">
           <div className="card-title">Histórico de Rendimentos</div>
           <div className="card-content">
             {loadingYields ? (

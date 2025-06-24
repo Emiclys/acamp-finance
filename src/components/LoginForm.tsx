@@ -5,6 +5,7 @@ import { useAuth } from "../hooks/useAuth";
 import "../index.css";
 import "../style/authpage.css";
 import { limits } from "../data/limits";
+import Button from "./base/Button";
 
 const LoginForm = () => {
   const { login } = useAuth();
@@ -64,13 +65,11 @@ const LoginForm = () => {
         </div>
 
         <div className="flex-row gap-10">
-          <button
-            className={signingIn ? "button-disabled w-100p" : "button w-100p"}
+          <Button
+            label={signingIn ? "Entrando..." : "Entrar"}
             disabled={signingIn || password.length < 6 || id.length < 4}
             onClick={handleSubmit}
-          >
-            {signingIn ? "Entrando..." : "Entrar"}
-          </button>
+          />
         </div>
       </div>
     </>

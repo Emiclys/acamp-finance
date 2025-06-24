@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
-import supabase from "../supabase/supabase";
 import { useToast } from "../components/toast";
-import { userNotFoundMessage } from "../utils/utils";
+import supabase from "../supabase/supabase";
 import "../index.css";
 import "../style/settingspage.css";
 
@@ -13,13 +12,17 @@ const SettingsPage = () => {
   const [newPassword, setNewPassword] = useState("");
   const showToast = useToast();
 
-  if (!isAuthenticated || userName == userNotFoundMessage) {
-    localStorage.setItem("userId", "");
+  if (!isAuthenticated) {
     location.href = "/"; // Redireciona para a página de login se o usuário não estiver logado
     return null; // Evita renderizar o componente se não houver usuário
   }
 
   const handleSave = async () => {
+    if (newPassword.length < 6) {
+      showToast("Erro", "A senha deve conter no mínimo 6 dígitos", "error");
+      return;
+    }
+
     setIsSaving(true);
 
     const { error } = await supabase
