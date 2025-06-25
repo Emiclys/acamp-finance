@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import supabase from "../supabase/supabase";
 import PasswordConfirmationModal from "../components/PasswordConfirmationModal";
 import Button from "../components/base/Button";
+import AuthVerifier from "../components/AuthVerifier";
 
 const SendPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -287,6 +288,7 @@ const SendPage = () => {
 
   return (
     <>
+      <AuthVerifier />
       <PasswordConfirmationModal
         open={modalOpen}
         onClose={handleCloseModal}
@@ -320,8 +322,8 @@ const SendPage = () => {
             {!receptorError && (
               <div className="flex-left flex-col">
                 <span>Valor</span>
-                <div className="flex-row">
-                  <span className="margin-h-10 flex-center">M$</span>
+                <div className="flex-row gap-5">
+                  <span className="flex-center">M$</span>
                   <input
                     type="text"
                     value={formattedValue}

@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import supabase from "../supabase/supabase";
 import { useAdminAuth } from "../hooks/useAdminAuth";
+import Button from "../components/base/Button";
 
 const AdminPage = () => {
   const [yieldPercentage, setYieldPercentage] = useState(0);
@@ -24,6 +25,16 @@ const AdminPage = () => {
     }
   };
 
+  useEffect(() => {
+    if (!yieldPercentage || yieldPercentage <= 0) setYieldButtonDisabled(true);
+    else setYieldButtonDisabled(false);
+  }, [yieldPercentage, yieldTo]);
+
+  useEffect(() => {
+    if (!yieldPercentage || yieldPercentage <= 0) setYieldButtonDisabled(true);
+    else setYieldButtonDisabled(false);
+  }, []);
+
   const handleYieldTo = async (user_id: string) => {
     setYieldToUser(user_id);
 
@@ -31,7 +42,7 @@ const AdminPage = () => {
       setYieldTo("Rendendo para todos");
       setYieldButtonDisabled(false);
       return;
-    } else if (user_id.length < 4) {
+    } else if (user_id.length < 4 || user_id.length > 4) {
       setYieldTo("Digite um ID de 4 dígitos");
       setYieldButtonDisabled(true);
     } else if (user_id.length == 4) {
@@ -164,13 +175,11 @@ const AdminPage = () => {
                   </div>
                 </div>
               </div>
-              <button
-                className="button"
+              <Button
+                label="Render"
                 disabled={yieldButtonDisabled}
                 onClick={processYield}
-              >
-                Render
-              </button>
+              />
               {yieldMessage && (
                 <span className="text-gray">{yieldMessage}</span>
               )}
@@ -182,9 +191,7 @@ const AdminPage = () => {
           <div className="card-title text-gray">Ações</div>
           <div className="card-content">
             <div className="flex-row gap-10">
-              <button className="button-red w-100p" onClick={logout}>
-                Logout
-              </button>
+              <Button label="Logout" variant="danger" onClick={logout} />
             </div>
           </div>
         </div>

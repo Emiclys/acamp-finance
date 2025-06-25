@@ -169,6 +169,10 @@ input[type="number"]:disabled {
   gap: 10px;
 }
 
+.gap-5 {
+  gap: 5px;
+}
+
 .w-100p {
   width: 100%;
 }

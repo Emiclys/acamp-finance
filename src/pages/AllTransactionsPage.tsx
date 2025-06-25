@@ -4,6 +4,8 @@ import supabase from "../supabase/supabase";
 import { useAuth } from "../hooks/useAuth";
 import "../index.css";
 import "../style/dashboard.css";
+import AuthVerifier from "../components/AuthVerifier";
+import Button from "../components/base/Button";
 
 interface Transaction {
   id: string;
@@ -50,18 +52,18 @@ const AllTransactionsPage = () => {
 
   return (
     <div className="flex-col gap-10 padding-25 desktop-fit">
+      <AuthVerifier />
       <div className="flex-col text-center margin-10">
         <span className="text-big">Todas as Transações</span>
         <span className="text-gray">
           Histórico completo das suas transações
         </span>
       </div>
-      <button
+      <Button
+        label="Voltar"
+        variant="secondary"
         onClick={() => (location.href = "/dashboard")}
-        className="button-gray"
-      >
-        Voltar ao dashboard
-      </button>
+      />
       <div className="card">
         <div className="card-title">Transações</div>
         <div className="card-content">
@@ -125,23 +127,20 @@ const AllTransactionsPage = () => {
           )}
         </div>
         <div className="flex-row gap-10 margin-t-10 flex-center">
-          <button
-            className="button-gray"
+          <Button
+            label="Anterior"
             disabled={page === 1}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
-          >
-            Anterior
-          </button>
-          <span style={{ color: "#fff" }}>
+          />
+          <span className="text-center">
             Página {page} de {totalPages}
           </span>
-          <button
-            className="button-gray"
+          <Button
+            label="Próxima"
+            variant="secondary"
             disabled={page === totalPages}
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-          >
-            Próxima
-          </button>
+          />
         </div>
       </div>
     </div>

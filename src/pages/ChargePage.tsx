@@ -3,6 +3,7 @@ import { useAuth } from "../hooks/useAuth";
 import { formatCurrency } from "../utils/utils";
 import QRCode from "react-qr-code";
 import Button from "../components/base/Button";
+import AuthVerifier from "../components/AuthVerifier";
 
 const ChargePage = () => {
   const [formattedValue, setFormattedValue] = useState("");
@@ -33,6 +34,7 @@ const ChargePage = () => {
 
   return (
     <div className="flex-col gap-10 padding-25 desktop-fit">
+      <AuthVerifier />
       <div className="flex-col text-center margin-10">
         <span className="text-big">Cobrar Merreca</span>
         <span className="text-gray">
@@ -45,17 +47,19 @@ const ChargePage = () => {
         <div className="card-content flex-col gap-10">
           <div className="flex-col gap-10">
             <span className="text-gray">Escaneie o QR Code:</span>
-            <span>Valor a ser cobrado</span>
-            <div className="flex-row flex-start">
-              <span className="margin-h-10">M$</span>
-              <input
-                type="text"
-                value={formattedValue}
-                onChange={handleValueChange}
-                disabled={false}
-                placeholder="0,00"
-                maxLength={14}
-              />
+            <div className="flex-col flex-left">
+              <span>Valor a ser cobrado</span>
+              <div className="flex-row gap-5 flex-start">
+                <span className="flex-center">M$</span>
+                <input
+                  type="text"
+                  value={formattedValue}
+                  onChange={handleValueChange}
+                  disabled={false}
+                  placeholder="0,00"
+                  maxLength={14}
+                />
+              </div>
             </div>
             <div
               style={{
@@ -73,6 +77,7 @@ const ChargePage = () => {
                   userId +
                   (amountToCharge != "0" ? "&amount=" + amount : "")
                 }
+                size={192}
               />
             </div>
           </div>

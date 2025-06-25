@@ -8,6 +8,7 @@ import type { RealtimeChannel } from "@supabase/supabase-js";
 import { CgArrowLeft, CgArrowRight } from "react-icons/cg";
 import Button from "../components/base/Button";
 import LoadingScreen from "../components/LoadingScreen";
+import AuthVerifier from "../components/AuthVerifier";
 
 // Definição do tipo para transação
 interface Transaction {
@@ -38,11 +39,6 @@ const Dashboard = () => {
   const [yields, setYields] = useState<Yield[]>([]);
   const [loadingYields, setLoadingYields] = useState(true);
   const [loadingTransactions, setLoadingTransactions] = useState(true);
-
-  if (!userId) {
-    location.href = "/"; // Redireciona para a página de login se o usuário não estiver logado
-    return null; // Evita renderizar o componente se não houver usuário
-  }
 
   if (!channel) {
     channel = supabase
@@ -133,6 +129,7 @@ const Dashboard = () => {
 
   return (
     <div className="flex-col gap-10 padding-25 desktop-fit">
+      <AuthVerifier />
       <div className="flex-col text-center">
         <div className="flex-col margin-10">
           <span className="text-big">Acamp Finance</span>

@@ -6,6 +6,7 @@ import "../index.css";
 import "../style/settingspage.css";
 import Button from "../components/base/Button";
 import LoadingScreen from "../components/LoadingScreen";
+import AuthVerifier from "../components/AuthVerifier";
 
 const SettingsPage = () => {
   const { isAuthenticated, userName, userId, logout } = useAuth();
@@ -71,6 +72,7 @@ const SettingsPage = () => {
 
   return (
     <div className="flex-col gap-10 flex-center desktop-fit">
+      <AuthVerifier />
       <div className="flex-col text-center margin-10">
         <span className="text-big">Configurações</span>
         <span className="text-gray">Defina as informações da sua conta.</span>
