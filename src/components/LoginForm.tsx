@@ -1,6 +1,6 @@
 import supabase from "../supabase/supabase";
 import Toast, { useToast } from "./toast";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import "../index.css";
 import "../style/authpage.css";
@@ -13,6 +13,31 @@ const LoginForm = () => {
   const [password, setPassword] = useState("");
   const [id, setId] = useState("");
   const showToast = useToast();
+
+  const idField = useRef<HTMLInputElement>(null);
+  const passwordField = useRef<HTMLInputElement>(null);
+
+  onkeydown = (e) => {
+    switch (e.key) {
+      case "Enter":
+        e.preventDefault();
+        if (document.activeElement == idField.current)
+          passwordField.current?.focus();
+        else if (document.activeElement == passwordField.current)
+          handleSubmit();
+        break;
+    }
+  };
+
+  // foca o campo de ID automaticamente
+  useEffect(() => {
+    idField?.current?.focus();
+  }, []);
+
+  const handleIdInput = (id: string) => {
+    setId(id);
+    if (id.length == 4) passwordField.current?.focus();
+  };
 
   const handleSubmit = async () => {
     setSigningIn(true);
@@ -54,9 +79,10 @@ const LoginForm = () => {
           <span>ID</span>
           <input
             type="number"
-            onChange={(e) => setId(e.target.value)}
+            onChange={(e) => handleIdInput(e.target.value)}
             placeholder="Digite seu ID"
             maxLength={limits.idLength}
+            ref={idField}
           />
         </div>
 
@@ -67,6 +93,7 @@ const LoginForm = () => {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Insira sua senha"
             maxLength={50}
+            ref={passwordField}
           />
         </div>
 
